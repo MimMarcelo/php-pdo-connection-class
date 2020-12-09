@@ -8,13 +8,17 @@ require_once './model/Conexao.php';
     </head>
     <body>
         <?php
-        $conn = new Conexao();
-        $conn->connect();
-//        $sql = "INSERT INTO tecnologia (`nome`) VALUES ('JQuery');";
+//        $conn = new Conexao();
+        echo "Conectado: " . Conexao::isConnected() . "<br>";
+        echo Conexao::getErro();
+        echo "<pre>";
+//        $sql1 = "INSERT INTO tecnologia (`nome`) VALUES ('Bootstrap');";
         $sql = "SELECT * FROM tecnologia;";
 //        $conn->exec($sql);
-        $conn->execWithReturn($sql);        
-        $conn->execWithReturn($sql);        
+        print_r(Conexao::execWithReturn($sql));
+//        Conexao::exec($sql1);
+        print_r(Conexao::execWithReturn($sql));
+        echo "</pre>";
         ?>
     </body>
 </html>

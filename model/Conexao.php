@@ -6,54 +6,69 @@ class Conexao {
     private static $username = "pdo";
     private static $password = "Senha123";
     private static $dbname = "pdo_tecnologia";
-    private $conn = null;
+    private static $erro = "";
+    private static $conn = null;
 
-    public function getConn() {
-        return $this->conn;
-    }
-
-    public function connect() {
+    private static function connect() {
         try {
-            $this->conn = new PDO("mysql:host=" . self::$servername .
+            self::$conn = new PDO("mysql:host=" . self::$servername .
                     ";dbname=" . self::$dbname,
                     self::$username,
                     self::$password);
             // set the PDO error mode to exception
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Banco de dados conectado com sucesso!";
+            self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return true;
         } catch (PDOException $e) {
-            echo "Falha na conexão com o banco de dados: " . $e->getMessage();
-            $this->conn = null;
+            self::$erro = "Falha na conexão com o banco de dados: " . $e->getMessage();
+            self::$conn = null;
+            return false;
         }
     }
 
-    public function exec($sql) {
+    public static function getErro() {
+        $message = self::$erro;
+        self::$erro = "";
+        return $message;
+    }
+
+    public static function isConnected() {
+        if (self::$conn == null) {
+            return self::connect();
+        }
+        return true;
+    }
+
+    public static function exec($sql) {
         try {
-            $this->conn->exec($sql);
-            echo "Executado no banco de dados!";
+            self::$conn->exec($sql);
+            return true;
         } catch (PDOException $ex) {
-            echo "Erro ao executar: " . $ex->getMessage();
+            self::$erro = "Erro ao executar: " . $ex->getMessage();
         } catch (Exception $ex) {
-            echo "Erro genérico: " . $ex->getMessage();
+            self::$erro = "Erro genérico: " . $ex->getMessage();
         }
+        return false;
     }
 
-    public function execWithReturn($sql) {
-        try {
-            $result = $this->conn->query($sql);
-            if ($result->rowCount() > 0) {
-                $result->setFetchMode(PDO::FETCH_ASSOC);
-                echo "<pre>";
-                print_r($result->fetchAll());
-                echo "</pre>";
-            } else {
-                echo "Nenhum registro encontrado!";
+    public static function execWithReturn($sql) {
+        if (self::isConnected()) {
+            try {
+                $result = self::$conn->query($sql);
+                if ($result->rowCount() > 0) {
+                    $result->setFetchMode(PDO::FETCH_ASSOC);
+                    return $result->fetchAll();
+                } else {
+                    self::$erro = "Nenhum registro encontrado!";
+                }
+            } catch (PDOException $ex) {
+                self::$erro = "Erro ao consultar: " . $ex->getMessage();
+            } catch (Exception $ex) {
+                self::$erro = "Erro genérico: " . $ex->getMessage();
             }
-        } catch (PDOException $ex) {
-            echo "Erro ao consultar: " . $ex->getMessage();
-        } catch (Exception $ex) {
-            echo "Erro genérico: " . $ex->getMessage();
         }
+        return false;
     }
-
+    public function __destruct() {
+        self::$conn = null;
+    }    
 }
