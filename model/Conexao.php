@@ -7,12 +7,19 @@ class Conexao {
     private static $password = "Senha123";
     private static $dbname = "pdo_tecnologia";
     private static $erro = "";
+    private static $data = null;
     private static $conn = null;
 
     public static function getErro() {
         $message = self::$erro;
         self::$erro = "";
         return $message;
+    }
+
+    public static function getData() {
+        $data = self::$data;
+        self::$data = null;
+        return $data;
     }
 
     public static function isConnected() {
@@ -56,7 +63,8 @@ class Conexao {
     private static function fetchResult($result){
         if ($result->rowCount() > 0) {
             $result->setFetchMode(PDO::FETCH_ASSOC);
-            return $result->fetchAll();
+            self::$data = $result->fetchAll();
+            return true;
         } else {
             self::$erro = "Nenhum registro encontrado!";
             return false;
