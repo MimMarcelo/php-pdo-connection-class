@@ -22,6 +22,12 @@ class Conexao {
         return $data;
     }
 
+    public static function getLastId() {
+        return self::$conn
+                ->query("SELECT LAST_INSERT_ID();")
+                ->fetchColumn();
+    }
+
     public static function isConnected() {
         if (self::$conn == null) {
             return self::connect();
@@ -32,7 +38,7 @@ class Conexao {
     public static function exec($sql) {
         if (self::isConnected()) {
             try {
-                return self::$conn->exec($sql);
+                return self::$conn->query($sql);
             } catch (PDOException $ex) {
                 self::$erro = "Erro ao executar: " . $ex->getMessage();
             } catch (Exception $ex) {

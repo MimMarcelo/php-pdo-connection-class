@@ -12,20 +12,21 @@ require_once './model/Conexao.php';
 //        echo "Conectado: " . Conexao::isConnected() . "<br>";
 //        echo Conexao::getErro();
         echo "<pre>";
-//        $sql1 = "INSERT INTO tecnologia (`nome`) VALUES ('PHP');";
+        $sql1 = "INSERT INTO tecnologia (`nome`) VALUES ('Javascript');";
         $sql = "SELECT * FROM tecnologia;";
 //        $conn->exec($sql);
-        
-        if(Conexao::execWithReturn($sql)){
-            print_r(Conexao::getData());
+
+        if(Conexao::exec($sql1)){
+            echo Conexao::getLastId();
         }
         else{
             echo Conexao::getErro();
         }
-//        if(!Conexao::exec($sql1)){
-//            echo Conexao::getErro();
-//        }
-//        print_r(Conexao::execWithReturn($sql));
+        if (Conexao::execWithReturn($sql)) {
+            print_r(Conexao::getData());
+        } else {
+            echo Conexao::getErro();
+        }
         echo "</pre>";
         ?>
     </body>
