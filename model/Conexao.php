@@ -2,10 +2,10 @@
 
 class Conexao {
 
-    private static $servername = "localhost";
-    private static $username = "pdo";
-    private static $password = "Senha123";
-    private static $dbname = "pdo_tecnologia";
+    private static $servername = "ec2-3-227-154-49.compute-1.amazonaws.com";
+    private static $username = "nyhrddadwdpqjy";
+    private static $password = "2f27b3f97526773f6d15428a4dcb5be3c7df729393d46ddee550da5f3664888f";
+    private static $dbname = "df4od0bkf7g1eb";
     private static $erro = "";
     private static $data = null;
     private static $conn = null;
@@ -79,8 +79,8 @@ class Conexao {
     
     private static function connect() {
         try {
-            self::$conn = new PDO("mysql:host=" . self::$servername .
-                    ";dbname=" . self::$dbname,
+            self::$conn = new PDO("pgsql:host=" . self::$servername .
+                    ";dbname=" . self::$dbname . ";port=5432",
                     self::$username,
                     self::$password);
             // set the PDO error mode to exception
